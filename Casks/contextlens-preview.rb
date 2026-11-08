@@ -2,7 +2,8 @@ cask "contextlens-preview" do
   version "0.3.0-preview.1"
   sha256 "1cd84d6b15fc7aed7346ff1fd27382d5d2cd5a51637c7358861ddf55ebe0da45"
 
-  url "https://github.com/Brendan-Lim/ContextLens/releases/download/v#{version}/ContextLens-#{version}-arm64.zip"
+  url "https://api.github.com/repos/Brendan-Lim/ContextLens/releases/assets/723563642",
+      header: "Accept: application/octet-stream"
   name "ContextLens Preview"
   desc "Unnotarized preview of local window capture for coding agents"
   homepage "https://github.com/Brendan-Lim/ContextLens"
@@ -14,6 +15,7 @@ cask "contextlens-preview" do
   conflicts_with cask: "contextlens"
   depends_on arch: :arm64
   depends_on macos: :sonoma
+  container type: :zip
 
   app "ContextLens.app"
   binary "#{appdir}/ContextLens.app/Contents/MacOS/contextlens-cli"
