@@ -1,0 +1,15 @@
+cask "contextlens" do
+  version "__VERSION__"
+  sha256 "__SHA256__"
+
+  url "https://github.com/Brendan-Lim/ContextLens/releases/download/v#{version}/ContextLens-#{version}-arm64.zip"
+  name "ContextLens"
+  desc "Capture and annotate window states for coding agents"
+  homepage "https://github.com/Brendan-Lim/ContextLens"
+
+  depends_on arch: :arm64
+  depends_on macos: ">= :sonoma"
+
+  app "ContextLens.app"
+  binary "#{appdir}/ContextLens.app/Contents/MacOS/contextlens-cli"
+end

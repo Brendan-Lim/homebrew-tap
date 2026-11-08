@@ -1,0 +1,26 @@
+name: Validate tap
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: python3 scripts/validate.py
+      - name: Audit published cask when available
+        if: hashFiles('Casks/contextlens.rb') != ''
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: '1'
+        run: |
+          brew tap Brendan-Lim/tap
+          brew style --cask Casks/contextlens.rb
+          brew audit --cask --online Brendan-Lim/tap/contextlens
