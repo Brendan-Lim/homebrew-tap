@@ -1,5 +1,11 @@
 # Brendan-Lim Homebrew tap
 
+## Publication security
+
+Both repositories' reachable histories and the existing preview were reviewed in the [public beta-readiness audit](https://github.com/Brendan-Lim/ContextLens/blob/main/docs/public-beta-readiness.md). Current recommendation: **controlled testers**; interactive first-run, fresh Screen Recording and capture/Hand Off acceptance remain pending.
+
+Before committing cask/workflow changes, run `python3 scripts/audit-public-files.py --staged`, then the tracked-file audit without that flag. Use `--history` in a full clone for all reachable refs, `python3 scripts/run-gitleaks.py` for a pinned local independent scan, and `python3 scripts/check-public-links.py` for public Markdown links. `python3 -m unittest discover -s scripts/tests -v` tests these guards. The separate read-only Publication Security workflow runs the same checks; it does not upload source or raw scanner reports. See [safe output, optional local hook and incident response](https://github.com/Brendan-Lim/ContextLens/blob/main/docs/publication-security.md). Genuine sensitive history requires a separately approved remediation plan; never automatically force-push or replace release assets.
+
 ## Unnotarized preview channel
 
 The separate `contextlens-preview` channel installs [ContextLens 0.3.0-preview.1](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1). The cask uses the verified published archive and actual SHA-256. [Candidate verification 42471268060](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42471268060) passed on a disposable arm64 macOS 15.8.2 runner with Homebrew 7.0.12: style, online audit, fetch/checksum, installation, app placement, CLI linking/help, quarantine retention, existing-app protection and uninstall preservation of session/export markers.

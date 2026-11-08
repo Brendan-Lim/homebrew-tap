@@ -1,0 +1,31 @@
+name: Publication Security
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: publication-security-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Include every public branch, tag and pull-request head
+        run: git fetch origin '+refs/heads/*:refs/remotes/origin/*' '+refs/pull/*/head:refs/remotes/origin/pull/*' --tags
+      - name: Publication guard regression tests
+        run: python3 -m unittest discover -s scripts/tests -v
+      - name: Audit current index and every reachable historical blob
+        run: |
+          python3 scripts/audit-public-files.py
+          python3 scripts/audit-public-files.py --history
+          python3 scripts/check-public-links.py
+      - name: Independent pinned Gitleaks scan (no source upload)
+        run: python3 scripts/run-gitleaks.py

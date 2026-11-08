@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+publication_root=$(git rev-parse --show-toplevel)
+exec python3 "$publication_root/scripts/audit-public-files.py" --staged
