@@ -22,7 +22,7 @@ if cask.exists():
     subprocess.run(['ruby', '-c', str(cask)], check=True)
     print('Cask syntax and release metadata validated; run Homebrew audit and clean installation separately.')
 else:
-    print('Pending template syntax validated. No installable cask or release is claimed.')
+    print('Pending stable template syntax validated. No installable stable cask is present in this checkout.')
 
 preview_template = root / 'Casks/contextlens-preview.rb.in'
 if preview_template.exists():
