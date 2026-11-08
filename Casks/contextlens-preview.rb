@@ -6,7 +6,7 @@ cask "contextlens-preview" do
       header: "Accept: application/octet-stream"
   name "ContextLens Preview"
   desc "Unnotarized preview of local window capture for coding agents"
-  homepage "https://github.com/Brendan-Lim/ContextLens"
+  homepage "https://github.com/Brendan-Lim/ContextLens/"
 
   livecheck do
     skip "Preview releases are updated explicitly after verification"
