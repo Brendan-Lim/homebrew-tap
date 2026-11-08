@@ -29,7 +29,7 @@ if preview_template.exists():
     preview = preview_template.read_text()
     assert preview.count('__VERSION__') == preview.count('__SHA256__') == 1
     for stanza in ['cask "contextlens-preview"', 'conflicts_with cask: "contextlens"',
-                   'depends_on arch: :arm64', 'depends_on macos: ">= :sonoma"',
+                   'depends_on arch: :arm64', 'depends_on macos: :sonoma',
                    'app "ContextLens.app"', 'binary "#{appdir}/ContextLens.app/Contents/MacOS/contextlens-cli"',
                    'Unnotarized', 'Open Anyway']:
         assert stanza in preview, stanza

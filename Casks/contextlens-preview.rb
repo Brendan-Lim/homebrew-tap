@@ -13,7 +13,7 @@ cask "contextlens-preview" do
 
   conflicts_with cask: "contextlens"
   depends_on arch: :arm64
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "ContextLens.app"
   binary "#{appdir}/ContextLens.app/Contents/MacOS/contextlens-cli"
