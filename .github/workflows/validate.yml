@@ -21,6 +21,7 @@ jobs:
         env:
           HOMEBREW_NO_AUTO_UPDATE: '1'
         run: |
-          brew tap Brendan-Lim/tap
+          # Audit this exact pushed/PR commit, rather than a stale copy of main.
+          brew tap --custom-remote Brendan-Lim/tap "$GITHUB_WORKSPACE"
           brew style --cask Casks/contextlens.rb
           brew audit --cask --online Brendan-Lim/tap/contextlens
