@@ -1,0 +1,27 @@
+cask "contextlens" do
+  version "__VERSION__,__ASSET_ID__"
+  sha256 "__SHA256__"
+
+  url "https://api.github.com/repos/Brendan-Lim/ContextLens/releases/assets/#{version.csv.second}",
+      header: "Accept: application/octet-stream"
+  name "ContextLens"
+  desc "Capture and annotate window states for coding agents"
+  homepage "https://github.com/Brendan-Lim/ContextLens"
+
+  conflicts_with cask: "contextlens-preview"
+  depends_on arch: :arm64
+  depends_on macos: :sonoma
+
+  app "ContextLens.app"
+  binary "#{appdir}/ContextLens.app/Contents/MacOS/contextlens-cli"
+
+  container type: :zip
+
+  caveats <<~EOS
+    Unnotarized official project release: ad-hoc signed, without Developer ID or Apple notarization.
+    Apple has not verified this app. Verify the release origin and SHA-256 before authorizing.
+    If blocked, choose Open Anyway in System Settings > Privacy & Security after trying to open it.
+    Keep macOS security enabled. Managed Macs may prohibit authorization.
+    https://support.apple.com/en-us/102445
+  EOS
+end

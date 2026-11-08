@@ -13,7 +13,7 @@ assert ':no_check' not in text
 for stanza in ['depends_on arch: :arm64', 'depends_on macos: ">= :sonoma"', 'app "ContextLens.app"', 'binary "#{appdir}/ContextLens.app/Contents/MacOS/contextlens-cli"']:
     assert stanza in text, stanza
 subprocess.run(['ruby', '-c', str(template)], check=True)
-if cask.exists():
+if cask.exists() and 'Unnotarized' not in cask.read_text():
     actual = cask.read_text()
     version = re.search(r'^  version "([0-9]+\.[0-9]+\.[0-9]+)"$', actual, re.M)
     checksum = re.search(r'^  sha256 "([a-f0-9]{64})"$', actual, re.M)
@@ -21,8 +21,28 @@ if cask.exists():
     assert actual == text.replace('__VERSION__', version[1]).replace('__SHA256__', checksum[1])
     subprocess.run(['ruby', '-c', str(cask)], check=True)
     print('Cask syntax and release metadata validated; run Homebrew audit and clean installation separately.')
-else:
+elif not cask.exists():
     print('Pending stable template syntax validated. No installable stable cask is present in this checkout.')
+
+official = root / 'Casks/contextlens-unnotarized.rb.in'
+if official.exists():
+    template = official.read_text()
+    assert template.count('__VERSION__') == template.count('__SHA256__') == template.count('__ASSET_ID__') == 1
+    for stanza in ['cask "contextlens"', 'conflicts_with cask: "contextlens-preview"',
+                   'depends_on arch: :arm64', 'depends_on macos: :sonoma',
+                   'app "ContextLens.app"', 'binary "#{appdir}/ContextLens.app/Contents/MacOS/contextlens-cli"',
+                   'Unnotarized official', 'Open Anyway', 'container type: :zip']:
+        assert stanza in template, stanza
+    for forbidden in [':no_check', 'zap ', 'xattr ', 'spctl ', '--no-quarantine']:
+        assert forbidden not in template, forbidden
+    subprocess.run(['ruby', '-c', str(official)], check=True)
+    if cask.exists() and 'Unnotarized' in cask.read_text():
+        actual = cask.read_text()
+        version = re.search(r'^  version "([0-9]+\.[0-9]+\.[0-9]+),([1-9][0-9]*)"$', actual, re.M)
+        checksum = re.search(r'^  sha256 "([a-f0-9]{64})"$', actual, re.M)
+        assert version and checksum, 'Real official version, checksum and asset ID required'
+        assert actual == template.replace('__VERSION__', version[1]).replace('__SHA256__', checksum[1]).replace('__ASSET_ID__', version[2])
+        subprocess.run(['ruby', '-c', str(cask)], check=True)
 
 preview_template = root / 'Casks/contextlens-preview.rb.in'
 if preview_template.exists():

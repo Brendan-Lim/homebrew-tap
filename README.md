@@ -26,15 +26,19 @@ Preview uninstall preserves sessions, settings and exported packages: there is n
 
 Maintainers: `python3 scripts/validate.py` checks both channel templates and generated casks. Generate a preview cask with the main repository's `python3 scripts/preview-release.py update-tap VERSION /path/to/tap`. Push candidates under `preview/**` to run style, online audit, fetch and disposable install/uninstall checks before promoting to main. `scripts/test-preview-install.py` refuses to run outside a GitHub-hosted runner and does not authorize or launch the GUI app.
 
-## Future signed/notarized stable channel
+## Official stable channel preparation
 
-Stable ContextLens distribution is pending Developer ID signing and Apple notarization. This channel contains a cask template and validation tooling. **There is no installable stable `contextlens` cask yet.**
+Official stable distribution is pending exact-candidate isolated interactive acceptance. This tap has separate pending templates for unnotarized official releases and future Developer ID/notarized releases. **There is no installable stable `contextlens` cask yet.** Project stability is not Apple verification.
 
 Source: [Brendan-Lim/ContextLens](https://github.com/Brendan-Lim/ContextLens). The native app captures and annotates a selected macOS window and exports local visual context for coding agents.
 
 Validate the pending template with `python3 scripts/validate.py`. It uses Ruby's parser without inventing a checksum or download. The workflow audits a real cask only after a verified release exists.
 
-After publishing a signed, notarized release, use the source repository's `scripts/update-homebrew.py VERSION /path/to/this/tap` to download its actual assets, verify checksums/signatures/stapling/Gatekeeper, and generate `Casks/contextlens.rb`. Set `CONTEXTLENS_TEAM_ID` to the expected Apple signing team first. Review, audit and commit the result; the updater does not push or use cross-repository tokens.
+For the official ad-hoc channel, first complete the source repository's [release acceptance procedure](https://github.com/Brendan-Lim/ContextLens/blob/main/docs/release-acceptance/README.md). After its official release is published, use `scripts/update-homebrew.py VERSION /path/to/this/tap --unnotarized-official` from a clean source checkout with the pinned DMG build dependencies available. It downloads both containers, verifies signatures and matching bundles, checks exact acceptance and source-tag provenance, and renders the actual ZIP asset ID/checksum. The template discloses unnotarized signing, retains quarantine and conflicts with the preview. It never creates an installable cask pointing to an unpublished candidate. Review and independently push the generated cask, then verify clean installation before announcing availability.
+
+Preview users must quit, save and back up sessions before switching. Once stable exists, uninstall only `contextlens-preview` (without `--zap`) before installing `Brendan-Lim/tap/contextlens`. Sessions and exports remain; never force/adopt an existing app. Reopen the saved session and verify annotations before removing backups. See [full migration instructions](https://github.com/Brendan-Lim/ContextLens/blob/main/docs/homebrew.md).
+
+For the unchanged Developer ID path, after publishing a signed, notarized release, use the source repository's `scripts/update-homebrew.py VERSION /path/to/this/tap` to download its actual assets, verify checksums/signatures/stapling/Gatekeeper, and generate `Casks/contextlens.rb`. Set `CONTEXTLENS_TEAM_ID` to the expected Apple signing team first. Review, audit and commit the result; the updater does not push or use cross-repository tokens.
 
 After that cask is published and installation tested, the intended commands are:
 
