@@ -39,10 +39,9 @@ if preview_template.exists():
     actual_path = root / 'Casks/contextlens-preview.rb'
     if actual_path.exists():
         actual = actual_path.read_text()
-        version = re.search(r'^  version "([0-9]+\.[0-9]+\.[0-9]+-preview\.[1-9][0-9]*)"$', actual, re.M)
+        version = re.search(r'^  version "([0-9]+\.[0-9]+\.[0-9]+-preview\.[1-9][0-9]*),([1-9][0-9]*)"$', actual, re.M)
         checksum = re.search(r'^  sha256 "([a-f0-9]{64})"$', actual, re.M)
-        asset = re.search(r'^  url "https://api.github.com/repos/Brendan-Lim/ContextLens/releases/assets/([1-9][0-9]*)",$', actual, re.M)
-        assert version and checksum and asset, 'Real preview version, SHA-256 and asset ID required'
-        assert actual == preview.replace('__VERSION__', version[1]).replace('__SHA256__', checksum[1]).replace('__ASSET_ID__', asset[1])
+        assert version and checksum, 'Real preview version, SHA-256 and asset ID required'
+        assert actual == preview.replace('__VERSION__', version[1]).replace('__SHA256__', checksum[1]).replace('__ASSET_ID__', version[2])
         subprocess.run(['ruby', '-c', str(actual_path)], check=True)
         print('Preview cask syntax/metadata validated; installation and authorization are separate checks.')

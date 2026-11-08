@@ -1,8 +1,8 @@
 cask "contextlens-preview" do
-  version "__VERSION__"
+  version "__VERSION__,__ASSET_ID__"
   sha256 "__SHA256__"
 
-  url "https://api.github.com/repos/Brendan-Lim/ContextLens/releases/assets/__ASSET_ID__",
+  url "https://api.github.com/repos/Brendan-Lim/ContextLens/releases/assets/#{version.csv.second}",
       header: "Accept: application/octet-stream"
   name "ContextLens Preview"
   desc "Unnotarized preview of local window capture for coding agents"
