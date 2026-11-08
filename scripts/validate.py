@@ -23,3 +23,25 @@ if cask.exists():
     print('Cask syntax and release metadata validated; run Homebrew audit and clean installation separately.')
 else:
     print('Pending template syntax validated. No installable cask or release is claimed.')
+
+preview_template = root / 'Casks/contextlens-preview.rb.in'
+if preview_template.exists():
+    preview = preview_template.read_text()
+    assert preview.count('__VERSION__') == preview.count('__SHA256__') == 1
+    for stanza in ['cask "contextlens-preview"', 'conflicts_with cask: "contextlens"',
+                   'depends_on arch: :arm64', 'depends_on macos: ">= :sonoma"',
+                   'app "ContextLens.app"', 'binary "#{appdir}/ContextLens.app/Contents/MacOS/contextlens-cli"',
+                   'Unnotarized', 'Open Anyway']:
+        assert stanza in preview, stanza
+    for forbidden in [':no_check', 'zap ', 'xattr ', 'spctl ', '--no-quarantine']:
+        assert forbidden not in preview, forbidden
+    subprocess.run(['ruby', '-c', str(preview_template)], check=True)
+    actual_path = root / 'Casks/contextlens-preview.rb'
+    if actual_path.exists():
+        actual = actual_path.read_text()
+        version = re.search(r'^  version "([0-9]+\.[0-9]+\.[0-9]+-preview\.[1-9][0-9]*)"$', actual, re.M)
+        checksum = re.search(r'^  sha256 "([a-f0-9]{64})"$', actual, re.M)
+        assert version and checksum, 'Real preview version and SHA-256 required'
+        assert actual == preview.replace('__VERSION__', version[1]).replace('__SHA256__', checksum[1])
+        subprocess.run(['ruby', '-c', str(actual_path)], check=True)
+        print('Preview cask syntax/metadata validated; installation and authorization are separate checks.')

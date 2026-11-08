@@ -1,7 +1,7 @@
 name: Validate tap
 on:
   push:
-    branches: [main]
+    branches: [main, 'preview/**']
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -25,3 +25,17 @@ jobs:
           brew tap --custom-remote Brendan-Lim/tap "$GITHUB_WORKSPACE"
           brew style --cask Casks/contextlens.rb
           brew audit --cask --online Brendan-Lim/tap/contextlens
+      - name: Audit and fetch actual preview candidate
+        if: hashFiles('Casks/contextlens-preview.rb') != ''
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: '1'
+        run: |
+          brew tap --custom-remote Brendan-Lim/tap "$GITHUB_WORKSPACE"
+          brew style --cask Casks/contextlens-preview.rb
+          brew audit --cask --online Brendan-Lim/tap/contextlens-preview
+          brew fetch --cask Brendan-Lim/tap/contextlens-preview
+      - name: Disposable preview install and uninstall (no manual authorization)
+        if: hashFiles('Casks/contextlens-preview.rb') != ''
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: '1'
+        run: python3 scripts/test-preview-install.py
