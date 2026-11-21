@@ -2,11 +2,11 @@ cask "contextlens" do
   version "__VERSION__,__ASSET_ID__"
   sha256 "__SHA256__"
 
-  url "https://api.github.com/repos/Brendan-Lim/ContextLens/releases/assets/#{version.csv.second}",
+  url "https://api.github.com/repos/bstack-tools/ContextLens/releases/assets/#{version.csv.second}",
       header: "Accept: application/octet-stream"
   name "ContextLens"
   desc "Capture and annotate window states for coding agents"
-  homepage "https://github.com/Brendan-Lim/ContextLens"
+  homepage "https://github.com/bstack-tools/ContextLens"
 
   conflicts_with cask: "contextlens-preview"
   depends_on arch: :arm64
