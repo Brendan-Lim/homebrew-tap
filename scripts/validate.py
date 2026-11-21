@@ -47,11 +47,12 @@ if official.exists():
 preview_template = root / 'Casks/contextlens-preview.rb.in'
 if preview_template.exists():
     preview = preview_template.read_text()
-    assert preview.count('__VERSION__') == preview.count('__SHA256__') == preview.count('__ASSET_ID__') == 1
+    assert preview.count('__VERSION__') == preview.count('__SHA256__') == 1 and '__ASSET_ID__' not in preview
     for stanza in ['cask "contextlens-preview"', 'conflicts_with cask: "contextlens"',
                    'depends_on arch: :arm64', 'depends_on macos: :sonoma',
                    'app "ContextLens.app"', 'binary "#{appdir}/ContextLens.app/Contents/MacOS/contextlens-cli"',
-                   'Unnotarized', 'Open Anyway', 'header: "Accept: application/octet-stream"', 'container type: :zip']:
+                   'Unnotarized', 'Open Anyway', 'container type: :zip',
+                   'url "https://github.com/bstack-tools/ContextLens/releases/download/v#{version}/ContextLens-#{version}-arm64.zip"']:
         assert stanza in preview, stanza
     for forbidden in [':no_check', 'zap ', 'xattr ', 'spctl ', '--no-quarantine']:
         assert forbidden not in preview, forbidden
@@ -59,9 +60,9 @@ if preview_template.exists():
     actual_path = root / 'Casks/contextlens-preview.rb'
     if actual_path.exists():
         actual = actual_path.read_text()
-        version = re.search(r'^  version "([0-9]+\.[0-9]+\.[0-9]+-preview\.[1-9][0-9]*),([1-9][0-9]*)"$', actual, re.M)
+        version = re.search(r'^  version "([0-9]+\.[0-9]+\.[0-9]+-preview\.[1-9][0-9]*)"$', actual, re.M)
         checksum = re.search(r'^  sha256 "([a-f0-9]{64})"$', actual, re.M)
-        assert version and checksum, 'Real preview version, SHA-256 and asset ID required'
-        assert actual == preview.replace('__VERSION__', version[1]).replace('__SHA256__', checksum[1]).replace('__ASSET_ID__', version[2])
+        assert version and checksum, 'Real preview version and SHA-256 required'
+        assert actual == preview.replace('__VERSION__', version[1]).replace('__SHA256__', checksum[1])
         subprocess.run(['ruby', '-c', str(actual_path)], check=True)
         print('Preview cask syntax/metadata validated; installation and authorization are separate checks.')
