@@ -20,6 +20,9 @@ jobs:
         if: hashFiles('Casks/contextlens.rb') != ''
         env:
           HOMEBREW_NO_AUTO_UPDATE: '1'
+          # Read-only job token (permissions: contents: read). Without it, Homebrew's
+          # GitHub API calls share the runner IP's anonymous rate limit and fail.
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
         run: |
           # Audit this exact pushed/PR commit, rather than a stale copy of main.
           brew tap --custom-remote Brendan-Lim/tap "$GITHUB_WORKSPACE"
@@ -44,6 +47,9 @@ jobs:
         if: hashFiles('Casks/contextlens-preview.rb') != ''
         env:
           HOMEBREW_NO_AUTO_UPDATE: '1'
+          # Read-only job token (permissions: contents: read). Without it, Homebrew's
+          # GitHub API calls share the runner IP's anonymous rate limit and fail.
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
         # Newer Homebrew no longer keeps the install's per-cask trust after
         # uninstall, and audits refuse untrusted taps. Trust is granted only on
         # this disposable runner, for this checked-out commit.
