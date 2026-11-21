@@ -12,7 +12,7 @@ import zlib
 ROOT = Path(__file__).resolve().parents[1]
 MAX_BLOB = 32 * 1024 * 1024
 CREDENTIALS = [
-    re.compile(rb'(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{20,}|AKIA[A-Z0-9]{16}|AIza[A-Za-z0-9_-]{30,}|xox[baprs]-[A-Za-z0-9-]{15,})'),
+    re.compile(rb'(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|(?<![A-Za-z0-9])sk-[A-Za-z0-9_-]{20,}|AKIA[A-Z0-9]{16}|AIza[A-Za-z0-9_-]{30,}|xox[baprs]-[A-Za-z0-9-]{15,})'),
     re.compile(rb'-----BEGIN (?:RSA |EC |OPENSSH |ENCRYPTED )?PRIVATE KEY-----'),
     re.compile(rb'(?i)\bauthorization\s*[:=]\s*[\x22\x27]?\s*(?:bearer|basic)\s+[A-Za-z0-9_+=./-]{12,}'),
     re.compile(rb'''(?i)\b(?:api[_-]?key|client[_-]?secret|password|access[_-]?token|session[_-]?token|cookie)\b[\x22\x27]?\s*[:=]\s*[\x22\x27][^\x22\x27\r\n]{12,}[\x22\x27]'''),
