@@ -1,9 +1,8 @@
 cask "contextlens-preview" do
-  version "__VERSION__,__ASSET_ID__"
+  version "__VERSION__"
   sha256 "__SHA256__"
 
-  url "https://api.github.com/repos/bstack-tools/ContextLens/releases/assets/#{version.csv.second}",
-      header: "Accept: application/octet-stream"
+  url "https://github.com/bstack-tools/ContextLens/releases/download/v#{version}/ContextLens-#{version}-arm64.zip"
   name "ContextLens Preview"
   desc "Unnotarized preview of local window capture for coding agents"
   homepage "https://github.com/bstack-tools/ContextLens/"
