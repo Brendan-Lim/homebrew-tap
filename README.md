@@ -8,7 +8,7 @@ Homebrew casks for **[ContextLens](https://github.com/bstack-tools/ContextLens)*
 brew install --cask Brendan-Lim/tap/contextlens-preview
 ```
 
-This installs [ContextLens 0.3.0-preview.1](https://github.com/bstack-tools/ContextLens/releases/tag/v0.3.0-preview.1) and links `contextlens-cli`. The cask uses the published release archive and its exact SHA-256, and is install-tested on a GitHub-hosted macOS runner.
+This installs [ContextLens 0.3.1-preview.2](https://github.com/bstack-tools/ContextLens/releases/tag/v0.3.1-preview.2) and links `contextlens-cli`. The cask uses the published release archive and its exact SHA-256, and is install-tested on a GitHub-hosted macOS runner.
 
 **First launch.** Previews are Apple Silicon builds for macOS 14+ that aren't notarized by Apple yet, so macOS asks you to confirm the first time:
 
