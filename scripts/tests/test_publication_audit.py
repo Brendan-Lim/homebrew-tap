@@ -50,6 +50,16 @@ class PublicationAuditTests(unittest.TestCase):
         findings = self.scan('history')['findings']
         self.assertTrue(any(f['rule'] == 'credential' and f['location'] == 'history-only' for f in findings))
 
+    def test_sk_key_inside_a_longer_word_is_not_a_credential(self):
+        # A merge message for branch fix/cask-browser-download-url once matched sk-[...]{20,}.
+        self.write('notes.txt', 'see fix/cask-browser-download-url and task-runner-configuration-file')
+        self.git('commit', '-qm', 'Merge pull request #1 from example/fix/cask-browser-download-url')
+        self.assertNotIn('credential', {f['rule'] for f in self.scan('history')['findings']})
+        for prefix in ['', 'OPENAI_API_KEY=', 'key: "', ' ']:
+            with self.subTest(prefix=prefix):
+                self.write('key.txt', prefix + 'sk-' + 'e' * 40)
+                self.assertIn('credential', {f['rule'] for f in self.scan('staged')['findings']})
+
     def test_same_blob_under_different_historical_names_gets_filename_checks(self):
         self.write('notes.txt', 'harmless bytes')
         self.git('commit', '-qm', 'first')
